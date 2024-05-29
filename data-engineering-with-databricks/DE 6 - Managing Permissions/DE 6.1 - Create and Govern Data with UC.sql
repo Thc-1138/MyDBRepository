@@ -167,9 +167,9 @@ SELECT * FROM agg_heartrate
 
 -- COMMAND ----------
 
--- GRANT USAGE ON CATALOG ${DA.my_new_catalog} TO `account users`;
--- GRANT USAGE ON SCHEMA example TO `account users`;
--- GRANT SELECT ON VIEW agg_heartrate to `account users`
+ #GRANT USAGE ON CATALOG ${DA.my_new_catalog} TO `account users`;
+ GRANT USAGE ON SCHEMA example TO `account users`;
+ GRANT SELECT ON VIEW agg_heartrate to `account users`
 
 -- COMMAND ----------
 
@@ -229,7 +229,7 @@ SELECT mask('sensitive data') AS data
 
 -- COMMAND ----------
 
--- GRANT EXECUTE ON FUNCTION mask to `account users`
+ GRANT EXECUTE ON FUNCTION mask to `account users`
 
 -- COMMAND ----------
 
@@ -297,7 +297,7 @@ SELECT
 
 -- COMMAND ----------
 
--- GRANT SELECT ON VIEW agg_heartrate to `account users`
+ GRANT SELECT ON VIEW agg_heartrate to `account users`
 
 -- COMMAND ----------
 
@@ -459,7 +459,7 @@ SHOW CATALOGS
 
 -- COMMAND ----------
 
--- SHOW GRANTS ON VIEW agg_heartrate
+ SHOW GRANTS ON VIEW agg_heartrate
 
 -- COMMAND ----------
 
@@ -469,7 +469,7 @@ SHOW CATALOGS
 
 -- COMMAND ----------
 
--- SHOW GRANTS ON TABLE heartrate_device
+ SHOW GRANTS ON TABLE heartrate_device
 
 -- COMMAND ----------
 
@@ -481,7 +481,7 @@ SHOW CATALOGS
 
 -- COMMAND ----------
 
--- SHOW GRANTS ON SCHEMA example
+ SHOW GRANTS ON SCHEMA example
 
 -- COMMAND ----------
 
@@ -493,7 +493,7 @@ SHOW CATALOGS
 
 -- COMMAND ----------
 
--- SHOW GRANTS ON CATALOG ${DA.my_new_catalog}
+ SHOW GRANTS ON CATALOG ${DA.my_new_catalog}
 
 -- COMMAND ----------
 
@@ -511,7 +511,7 @@ SHOW CATALOGS
 
 -- COMMAND ----------
 
--- SHOW GRANTS ON FUNCTION mask
+ SHOW GRANTS ON FUNCTION mask
 
 -- COMMAND ----------
 

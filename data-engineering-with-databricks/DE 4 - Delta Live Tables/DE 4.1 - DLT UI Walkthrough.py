@@ -95,6 +95,10 @@ DA.print_pipeline_config(pipeline_language)
 
 # COMMAND ----------
 
+# MAGIC  %run ../Includes/Workspace-Setup
+
+# COMMAND ----------
+
 DA.validate_pipeline_config(pipeline_language)
 
 # COMMAND ----------
