@@ -82,8 +82,15 @@ display(spark
         .table("products")
         .select("name", "price")
         .where("price < 200")
-        .orderBy("price")
+        .orderBy("price") 
        )
+
+display(spark
+        .table("products")
+        .select("name","price")
+        .where("price > 200")
+        .orderBy("price")
+)       
 
 # COMMAND ----------
 
@@ -296,7 +303,7 @@ budget_df.printSchema()
   .select("name", "price")
   .where("price < 200")
   .orderBy("price")
-  .show())
+  .display())
 
 # COMMAND ----------
 

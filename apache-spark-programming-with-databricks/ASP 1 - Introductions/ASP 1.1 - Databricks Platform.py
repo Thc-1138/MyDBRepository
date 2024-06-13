@@ -331,6 +331,9 @@ spark.conf.set("whatever.events", DA.paths.events)
 # MAGIC CREATE TABLE IF NOT EXISTS events
 # MAGIC USING DELTA
 # MAGIC OPTIONS (path = "${whatever.events}");
+# MAGIC
+# MAGIC %sql
+# MAGIC DESCRIBE EXTENDED events
 
 # COMMAND ----------
 

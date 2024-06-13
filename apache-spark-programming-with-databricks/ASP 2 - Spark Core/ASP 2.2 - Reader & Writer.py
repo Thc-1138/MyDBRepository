@@ -366,6 +366,11 @@ events_df.write.mode("overwrite").saveAsTable("events")
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC select * from events
+
+# COMMAND ----------
+
 # DBTITLE 0,--i18n-99ce9f84-63bf-4f6f-9518-c7b2b9160627
 # MAGIC %md
 # MAGIC

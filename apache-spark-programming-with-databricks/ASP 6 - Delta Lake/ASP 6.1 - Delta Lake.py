@@ -284,7 +284,7 @@ display(df)
 
 # TODO
 
-time_stamp_string = <FILL_IN>
+time_stamp_string = "2024-06-08T21:05:33.000+00:00"
 df = spark.read.format("delta").option("timestampAsOf", time_stamp_string).load(delta_path)
 display(df)
 
@@ -309,10 +309,10 @@ display(df)
 
 # COMMAND ----------
 
-# from delta.tables import *
+ from delta.tables import *
 
-# delta_table = DeltaTable.forPath(spark, delta_path)
-# delta_table.vacuum(0)
+ delta_table = DeltaTable.forPath(spark, delta_path)
+ delta_table.vacuum(0)
 
 # COMMAND ----------
 
@@ -359,8 +359,8 @@ display(dbutils.fs.ls(delta_path + "/state=CA/"))
 
 # COMMAND ----------
 
-# df = spark.read.format("delta").option("versionAsOf", 0).load(delta_path)
-# display(df)
+ df = spark.read.format("delta").option("versionAsOf", 0).load(delta_path)
+ display(df)
 
 # COMMAND ----------
 

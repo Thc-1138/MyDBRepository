@@ -55,7 +55,12 @@
 # COMMAND ----------
 
 # TODO
-df = FILL_IN
+df = (spark
+      .readStream
+      .option("maxFilesPerTrigger", 1)
+      .format("delta")
+      .load(DA.paths.events)
+      )
 
 # COMMAND ----------
 
@@ -84,10 +89,10 @@ DA.tests.validate_1_1(df)
 
 # COMMAND ----------
 
-# TODO
-spark.FILL_IN
+from pyspark.sql.functions import *
+spark.conf.set("spark.sql.shuffle.partitions", spark.sparkContext.defaultParallelism)
 
-traffic_df = df.FILL_IN
+traffic_df = df.groupBy("traffic_source").agg(approx_count_distinct("user_id").alias("active_users")).orderBy("traffic_source")
 
 # COMMAND ----------
 
@@ -97,6 +102,10 @@ traffic_df = df.FILL_IN
 # MAGIC
 # MAGIC
 # MAGIC **2.1: CHECK YOUR WORK**
+
+# COMMAND ----------
+
+display(traffic_df)
 
 # COMMAND ----------
 
@@ -115,6 +124,8 @@ DA.tests.validate_2_1(traffic_df.schema)
 # COMMAND ----------
 
 # TODO
+
+display(traffic_df)
 
 # COMMAND ----------
 
@@ -141,7 +152,13 @@ DA.tests.validate_2_1(traffic_df.schema)
 # COMMAND ----------
 
 # TODO
-traffic_query = (traffic_df.FILL_IN
+traffic_query = (traffic_df
+                 .writeStream
+                 .queryName("active_users_by_traffic")
+                 .format("memory")
+                 .outputMode("complete")
+                 .trigger(processingTime="1 second")
+                 .start()
 )
 
 # COMMAND ----------
@@ -169,7 +186,7 @@ DA.tests.validate_4_1(traffic_query)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC select * from active_users_by_traffic
 
 # COMMAND ----------
 
@@ -202,7 +219,17 @@ DA.tests.validate_4_1(traffic_query)
 
 # COMMAND ----------
 
-# TODO
+# Get the StreamingQueryManager
+sqm = spark.streams
+
+# List the names of active streaming queries
+active_query_names = [q.name for q in sqm.active]
+print(active_query_names)
+
+for s in sqm.active:
+  s.stop()
+  print(f"Streaming query '{s.name}' has been stopped" )
+
 
 # COMMAND ----------
 

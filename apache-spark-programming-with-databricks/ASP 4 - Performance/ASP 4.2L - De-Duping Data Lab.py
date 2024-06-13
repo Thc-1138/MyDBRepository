@@ -65,7 +65,7 @@ dbutils.fs.head(f"{DA.paths.datasets}/people/people-with-dups.txt")
 
 # COMMAND ----------
 
-# TODO
+from pyspark.sql.functions import *
 
 source_file = f"{DA.paths.datasets}/people/people-with-dups.txt"
 delta_dest_dir = f"{DA.paths.working_dir}/people"
@@ -74,7 +74,38 @@ delta_dest_dir = f"{DA.paths.working_dir}/people"
 dbutils.fs.rm(delta_dest_dir, True)
 
 # Complete your work here...
+df = (spark
+      .read
+      .option("sep", ":")
+      .option("header", True)
+      .option("inferSchema", True)
+      .csv(source_file)
+      .withColumn("firstName", upper(col("firstName")))
+      .withColumn("middleName", upper(col("middleName")))
+      .withColumn("lastName", upper(col("lastName")))
+      .withColumn("ssn", regexp_replace(col("ssn"), "-", ""))
+      .distinct()
+      .withColumn("firstName", initcap(col("firstName")))
+      .withColumn("middleName", initcap(col("middleName"))) 
+      .withColumn("lastName", initcap(col("lastName"))) 
+      .withColumn("ssn", concat_ws("-", col("ssn").substr(1, 3), col("ssn").substr(4, 2),col("ssn").substr(6, 4) ))
+      .distinct()
+)
 
+display(df)
+
+df.rdd.getNumPartitions()
+
+df_coalesced = df.coalesce(1)
+
+df.repartition(1)
+
+df_coalesced.write.format("delta").mode("overwrite").save(delta_dest_dir)
+
+
+# COMMAND ----------
+
+display(dbutils.fs.ls(delta_dest_dir))
 
 # COMMAND ----------
 

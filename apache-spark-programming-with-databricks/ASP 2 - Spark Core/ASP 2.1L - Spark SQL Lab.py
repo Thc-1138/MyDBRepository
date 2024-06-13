@@ -42,7 +42,10 @@
 # COMMAND ----------
 
 # TODO
-events_df = FILL_IN
+events_df = (spark
+             .table("events")
+             .select("*")
+            )
 
 # COMMAND ----------
 
@@ -55,7 +58,7 @@ events_df = FILL_IN
 
 # COMMAND ----------
 
-# TODO
+events_df.printSchema()
 
 # COMMAND ----------
 
@@ -73,7 +76,8 @@ events_df = FILL_IN
 
 # TODO
 mac_df = (events_df
-          .FILL_IN
+          .where("device = 'macOS'")
+          .orderBy("event_timestamp")
          )
 
 # COMMAND ----------
@@ -88,8 +92,8 @@ mac_df = (events_df
 # COMMAND ----------
 
 # TODO
-num_rows = mac_df.FILL_IN
-rows = mac_df.FILL_IN
+num_rows = mac_df.count()
+rows = mac_df.take(5)
 
 # COMMAND ----------
 
@@ -123,7 +127,7 @@ print("All test pass")
 # COMMAND ----------
 
 # TODO
-mac_sql_df = spark.FILL_IN
+mac_sql_df = spark.sql("""Select * from events where device = 'macOS' order by event_timestamp""")
 
 display(mac_sql_df)
 

@@ -57,8 +57,17 @@ df = (spark.readStream
 
 # COMMAND ----------
 
+
+
+# COMMAND ----------
+
+from pyspark.sql.functions import col
 # TODO
-events_df = (df.FILL_IN)
+events_df = (df.withColumn("createdAt", (col("event_timestamp")/1e6).cast("timestamp")).withWatermark("createdAt", "2 hours"))
+
+# COMMAND ----------
+
+display((events_df))
 
 # COMMAND ----------
 
@@ -90,10 +99,15 @@ DA.tests.validate_1_1(events_df.schema)
 
 # COMMAND ----------
 
-# TODO
-spark.FILL_IN
+from pyspark.sql.functions import *
 
-traffic_df = (events_df.FILL_IN
+spark.conf.set("spark.sql.shuffle.partitions", spark.sparkContext.defaultParallelism)
+print(spark.conf.get("spark.sql.shuffle.partitions"))
+
+traffic_df = (events_df.groupBy("traffic_source", window("createdAt", "1 hour"))
+              .agg(approx_count_distinct("user_id").alias("active_users"))
+              .select("traffic_source", "active_users", hour("window.start").alias("hour"))
+              .orderBy("hour")
 )
 
 # COMMAND ----------
@@ -126,7 +140,12 @@ DA.tests.validate_2_1(traffic_df.schema)
 
 # COMMAND ----------
 
-# TODO
+streamingQuery = traffic_df \
+    .writeStream \
+    .queryName("hourly_traffic") \
+    .format("console") \
+    .outputMode("complete") \
+    .start()
 
 # COMMAND ----------
 
@@ -153,10 +172,26 @@ DA.tests.validate_2_1(traffic_df.schema)
 
 # COMMAND ----------
 
+# Get the StreamingQueryManager
+sqm = spark.streams
+
+query_to_stop = sqm.get("hourly_traffic")
+
+# List the names of active streaming queries
+active_query_names = [q.name for q in sqm.active]
+print(active_query_names)
+
+# COMMAND ----------
+
 # TODO
 DA.block_until_stream_is_ready("hourly_traffic")
 
-for s in FILL_IN:
+for s in sqm.active:
+  if s.name == "hourly_traffic":
+    s.stop()
+    print(f"Streaming query '{s.name}' has been stopped" )
+  else:
+    print(f"this streaming query '{s.name}' isnt what you are looking for")  
 
 # COMMAND ----------
 
